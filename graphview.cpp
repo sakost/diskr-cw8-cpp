@@ -71,7 +71,6 @@ QByteArray GraphView::toGraphviz() {
     }
 
 
-
     for (qsizetype i = 0; i < graph->size(); ++i) {
         for (qsizetype j = 0; j < (*graph)[i].size(); ++j) {
             if((*graph)[i][j] > 0) {
