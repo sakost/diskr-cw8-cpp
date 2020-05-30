@@ -91,6 +91,9 @@ void GraphView::updateCache() {
     auto outBytes = process.readAllStandardOutput();
     auto image = QImage::fromData(outBytes, "png");
     imageBuffer = QPixmap::fromImage(image);
+    if(imageBuffer.width() > max_image_width){
+        imageBuffer = imageBuffer.scaledToWidth(max_image_width);
+    }
     setMinimumSize(imageBuffer.size());
 }
 

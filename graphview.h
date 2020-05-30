@@ -30,6 +30,8 @@ private:
     QPixmap imageBuffer;
     Graph *graph;
     void updateCache();
+
+    const int max_image_width=800;
 public slots:
     [[maybe_unused]] void updateImage(QModelIndex topLeft, QModelIndex bottomRight, const QVector<int>& roles = QVector<int>());
     void updateImage();

@@ -1,15 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-void MainWindow::addNode() {
-    graphModel->addNode();
-}
-
-void MainWindow::removeLastNode() {
-    graphModel->removeLastNode();
-}
-
-
 
 MainWindow::MainWindow(GraphView *pView, GraphModel* model, QWidget *parent)
             : QMainWindow(parent),
@@ -29,8 +20,23 @@ MainWindow::MainWindow(GraphView *pView, GraphModel* model, QWidget *parent)
     connect(ui->startButton, SIGNAL(clicked()), pView, SLOT(updateImage())); // todo replace with algorithm
     connect(graphModel, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),
             pView, SLOT(updateImage(const QModelIndex, const QModelIndex, const QVector<int>))); // reload image when data changed
+    // spins for counting
+    connect(ui->countEdges, SIGNAL(valueChanged(int)), this, SLOT(changedEdges(int)));
+    connect(ui->countNodes, SIGNAL(valueChanged(int)), this, SLOT(changedNodes(int)));
 
-
+    connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startAlgorithm()));
 
     emit graphView->updateImage();
+}
+
+void MainWindow::startAlgorithm() {
+    ui->outputTextBrowser->append("stub...");
+}
+
+void MainWindow::changedEdges(int count) {
+    emit graphModel->rebuildModel(count, -1);
+}
+
+void MainWindow::changedNodes(int count) {
+    emit graphModel->rebuildModel(-1, count);
 }

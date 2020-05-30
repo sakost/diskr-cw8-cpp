@@ -26,8 +26,6 @@ public:
     MainWindow(GraphView *pView, GraphModel* model, QWidget *parent= nullptr);
 
 public slots:
-    void addNode();
-    void removeLastNode();
 
 private:
     Ui::MainWindow *ui;
@@ -35,4 +33,6 @@ private:
     GraphModel *graphModel;
 public slots:
     void startAlgorithm();
+    void changedEdges(int count);
+    void changedNodes(int count);
 };
