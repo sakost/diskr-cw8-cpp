@@ -113,16 +113,18 @@ bool GraphModel::addNode() {
 }
 
 bool GraphModel::insertRows(int row, int count, const QModelIndex& parent) {
-    if(row != graph->size() || count != 1){ // just append one item
+    if(row != graph->size() || count < 1){ // just append items
         return false;
     }
     if(row == graph->size()){ // append
         beginInsertRows(parent, row, row);
         int columns_count = DEFAULT_NODES;
-        if(!graph->empty()){
+        if (!graph->empty()) {
             columns_count = (*graph)[0].size();
         }
-        graph->push_back(QVector<int>(columns_count, 0));
+        for (int i = 0; i < count; ++i) {
+            graph->push_back(QVector<int>(columns_count, 0));
+        }
         endInsertRows();
         emit dataChanged(this->createIndex(row, 0), this->createIndex(row, graph->size()-1));
         return true;
@@ -135,7 +137,7 @@ bool GraphModel::addEdge() {
 }
 
 bool GraphModel::insertColumns(int column, int count, const QModelIndex& parent) {
-    if(!graph->empty() && (column != (*graph)[0].size() || count != 1)){ // just append one item
+    if(!graph->empty() && column != (*graph)[0].size() || column < 1){ // just append items
         return false;
     }
     if(graph->empty()){
@@ -145,11 +147,13 @@ bool GraphModel::insertColumns(int column, int count, const QModelIndex& parent)
     }
     if(column == (*graph)[0].size()){ // append
         beginInsertColumns(parent, column, column);
-        for(auto &edge: *graph){
-            edge.push_back(0);
+        for (int i = 0; i < count; ++i) {
+            for (auto &edge: *graph) {
+                edge.push_back(0);
+            }
         }
         endInsertColumns();
-        emit dataChanged(this->createIndex(0, column), this->createIndex((*graph)[0].size()-1, column));
+        emit dataChanged(this->createIndex(0, column), this->createIndex((*graph)[0].size()-1, column+count-1));
         return true;
     }
     return false; // can't be reached
@@ -167,4 +171,8 @@ bool GraphModel::removeLastEdge() {
         return false;
     }
     return removeRow(graph->size()-1);
+}
+
+void GraphModel::rebuildModel(int rows, int columns) {
+
 }

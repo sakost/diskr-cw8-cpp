@@ -41,6 +41,8 @@ protected:
 
 private:
     Graph* graph;
+public slots:
+    void rebuildModel(int rows, int columns);
 };
 
 #endif //DISKR_CW8_CPP_GRAPHMODEL_H

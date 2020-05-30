@@ -30,8 +30,7 @@ MainWindow::MainWindow(GraphView *pView, GraphModel* model, QWidget *parent)
     connect(graphModel, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),
             pView, SLOT(updateImage(const QModelIndex, const QModelIndex, const QVector<int>))); // reload image when data changed
 
-    connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addNode())); // add node
-    connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(removeLastNode())); // remove node
+
 
     emit graphView->updateImage();
 }

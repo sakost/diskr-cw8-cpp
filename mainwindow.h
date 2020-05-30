@@ -33,4 +33,6 @@ private:
     Ui::MainWindow *ui;
     GraphView *graphView;
     GraphModel *graphModel;
+public slots:
+    void startAlgorithm();
 };
