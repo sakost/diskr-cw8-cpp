@@ -168,5 +168,3 @@ bool GraphModel::removeLastEdge() {
     }
     return removeRow(graph->size()-1);
 }
-
-

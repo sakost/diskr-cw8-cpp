@@ -10,8 +10,7 @@
 #include <QPair>
 #include <QList>
 
-using Graph = QVector<QVector<int>>;
-
+#include "Graph.h"
 
 class GraphModel: public QAbstractTableModel{
     Q_OBJECT

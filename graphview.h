@@ -11,7 +11,7 @@
 #include <QPixmapCache>
 #include <QModelIndex>
 
-using Graph = QVector< QVector< int > >;
+#include "Graph.h"
 
 class GraphView: public QOpenGLWidget{
     Q_OBJECT
