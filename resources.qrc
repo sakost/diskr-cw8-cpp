@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>assets/plus.svg</file>
+    </qresource>
+    <qresource>
+        <file>assets/minus.svg</file>
+    </qresource>
+</RCC>
