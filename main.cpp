@@ -26,7 +26,8 @@ int main(int argc, char** argv) {
             window_size.width(),
             window_size.height()
             );
-    w->showMaximized();
+    w->show();
+//    w->showMaximized();
     w->activateWindow();
     w->raise();
     return QApplication::exec();
