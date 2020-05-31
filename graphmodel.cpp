@@ -81,26 +81,30 @@ QModelIndex GraphModel::parent(const QModelIndex &child) const {
 
 
 bool GraphModel::removeColumns(int column, int count, const QModelIndex &parent) {
-    if(column < 0 || count != 1 || graph->empty() || column != (*graph)[0].size() - 1){
+    if(column < 0 || graph->empty() || column + count != (*graph)[0].size()){
         return false;
     }
-    beginRemoveColumns(parent, column, column);
-    for (auto &edge: *graph){
-        edge.pop_back();
+    beginRemoveColumns(parent, column, column + count-1);
+    for (int i = 0; i < count; ++i) {
+        for (auto &edge: *graph){
+            edge.pop_back();
+        }
     }
     endRemoveColumns();
-    emit dataChanged(this->createIndex(0, column), this->createIndex(graph->size()-1, column));
+    emit dataChanged(this->createIndex(0, column), this->createIndex(graph->size()-1, column+count-1));
     return true;
 }
 
 bool GraphModel::removeRows(int row, int count, const QModelIndex &parent) {
-    if(row < 0 || count != 1 || row != graph->size() - 1){
+    if(row < 0 || row + count != graph->size()){
         return false;
     }
     int col_removed;
-    beginRemoveRows(parent, row, row);
+    beginRemoveRows(parent, row, row+count-1);
     col_removed = graph->back().size() - 1;
-    graph->pop_back();
+    for (int i = 0; i < count; ++i) {
+        graph->pop_back();
+    }
     endRemoveRows();
     emit dataChanged(this->createIndex(row, 0), this->createIndex(row, col_removed));
     return true;
