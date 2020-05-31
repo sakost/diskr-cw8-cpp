@@ -4,7 +4,7 @@ project(diskr-cw8-cpp)
 set(CMAKE_CXX_STANDARD 17)
 set(DISKR_SOURCE_FILES mainwindow.cpp main.cpp graphmodel.cpp graphview.cpp Graph.cpp Graph.h)
 set(DISKR_HEADERS_FILES mainwindow.h graphmodel.h graphview.h)
-set(DISKR_RESOURCE_FILES resources.qrc)
+set(DISKR_RESOURCE_FILES)
 set(DISKR_UI_FILES mainwindow.ui)
 
 # for qt
