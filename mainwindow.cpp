@@ -10,6 +10,8 @@ MainWindow::MainWindow(GraphView *pView, GraphModel* model, QWidget *parent)
     setWindowTitle("Курсовая работа №8");
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableView->setMaximumSize(700, 600);
+
     graphView = pView;
     graphModel = model;
 

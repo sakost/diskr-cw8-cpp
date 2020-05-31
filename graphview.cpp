@@ -69,13 +69,13 @@ QByteArray GraphView::toGraphviz() {
         }
     }
 
-    QString snodes = "\t\t" + nodes.join(" -- ") + "[style=invis];\n";
+    QString snodes = QString("\t\t%1%2;\n").arg(nodes.join(" -- "), !graph->empty() && (*graph)[0].size() > 1 ? "[style=invis]" : "");//"\t\t" + nodes.join(" -- ") + ";\n";
 
     for (int i = 0; i < graph->size(); ++i) {
         edges += "edge" + QString::number(i+1);
     }
 
-    QString sedges = "\t\t" + edges.join(" -- ") + "[style=invis];\n";
+    QString sedges = QString("\t\t%1%2;\n").arg(edges.join(" -- "), graph->size() > 1 ? "[style=invis]" : "");
 
 
     for (qsizetype i = 0; i < graph->size(); ++i) {
@@ -100,6 +100,9 @@ void GraphView::updateCache() {
     imageBuffer = QPixmap::fromImage(image);
     if(imageBuffer.width() > max_image_width){
         imageBuffer = imageBuffer.scaledToWidth(max_image_width);
+    }
+    if(imageBuffer.height() > max_image_height){
+        imageBuffer = imageBuffer.scaledToHeight(max_image_height);
     }
     setMinimumSize(imageBuffer.size());
 }

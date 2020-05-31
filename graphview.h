@@ -31,7 +31,7 @@ private:
     Graph *graph;
     void updateCache();
 
-    const int max_image_width=600;
+    const int max_image_width=700, max_image_height = 600;
 public slots:
     [[maybe_unused]] void updateImage(QModelIndex topLeft, QModelIndex bottomRight, const QVector<int>& roles = QVector<int>());
     void updateImage();
