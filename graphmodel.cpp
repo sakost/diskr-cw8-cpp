@@ -121,7 +121,7 @@ bool GraphModel::insertRows(int row, int count, const QModelIndex& parent) {
             graph->push_back(QVector<int>(columns_count, 0));
         }
         endInsertRows();
-        emit dataChanged(this->createIndex(row, 0), this->createIndex(row+count-1, graph->size()-1));
+        emit dataChanged(this->createIndex(row, 0), this->createIndex(row+count-1, (*graph)[0].size() - 1));
         return true;
     }
     return false; // can't be reached
@@ -145,7 +145,7 @@ bool GraphModel::insertColumns(int column, int count, const QModelIndex& parent)
             }
         }
         endInsertColumns();
-        emit dataChanged(this->createIndex(0, column), this->createIndex((*graph)[0].size()-1, column+count-1));
+        emit dataChanged(this->createIndex(0, column), this->createIndex(graph->size()-1, column+count-1));
         return true;
     }
     return false; // can't be reached
@@ -154,22 +154,22 @@ bool GraphModel::insertColumns(int column, int count, const QModelIndex& parent)
 
 void GraphModel::rebuildModel(int rows, int columns) {
     if(rows == -1){
-        rows = graph->size()+1;
+        rows = graph->size();
     }
     if(columns == -1){
-        columns = graph->empty() ? DEFAULT_NODES : (*graph)[0].size()+1;
+        columns = graph->empty() ? DEFAULT_NODES : (*graph)[0].size();
     }
     if(rows > graph->size()){
         insertRows(graph->size(), rows - graph->size(), QModelIndex());
     } else if(rows < graph->size()){
-        removeRows(graph->size() - rows, rows, QModelIndex());
+        removeRows(rows, graph->size() - rows, QModelIndex());
     }
     if(rows == 0){
         return;
     }
-    if((*graph)[0].size() > columns){
-        insertColumns((*graph).size(), columns - (*graph).size(), QModelIndex());
-    } else if((*graph).size() < columns){
-        removeColumns((*graph).size() - columns, columns, QModelIndex());
+    if((*graph)[0].size() < columns){
+        insertColumns((*graph)[0].size(), columns - (*graph)[0].size(), QModelIndex());
+    } else if((*graph)[0].size() > columns){
+        removeColumns(columns, (*graph)[0].size() - columns, QModelIndex());
     }
 }
