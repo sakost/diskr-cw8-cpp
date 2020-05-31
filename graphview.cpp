@@ -41,7 +41,10 @@ void GraphView::paintEvent(QPaintEvent *event) {
 
 
 QByteArray GraphView::toGraphviz() {
-    QString result = "graph G {\n"
+    QString connections, result = "graph G {\n"
+//                        "\trank=same;\n"
+//                        "\trankdir=LR;\n"
+                        "\toverlap=false; splines=false;\n"
                         "\tsubgraph cluster_0 {\n"
                         "\t\tstyle=filled;\n"
                         "\t\tcolor=lightgrey;\n"
@@ -58,27 +61,31 @@ QByteArray GraphView::toGraphviz() {
                         "\t}\n"
                         "%3"
                         "}";
-    QString nodes, edges, connections;
+    QStringList nodes, edges;
 
     if(!graph->empty()){
         for (int i = 0; i < (*graph)[0].size(); ++i) {
-            nodes += "\t\tnode" + QString::number(i+1) + ";\n";
+            nodes += "node" + QString::number(i+1);
         }
     }
 
+    QString snodes = "\t\t" + nodes.join(" -- ") + "[style=invis];\n";
+
     for (int i = 0; i < graph->size(); ++i) {
-        edges += "\t\tedge" + QString::number(i+1) + ";\n";
+        edges += "edge" + QString::number(i+1);
     }
+
+    QString sedges = "\t\t" + edges.join(" -- ") + "[style=invis];\n";
 
 
     for (qsizetype i = 0; i < graph->size(); ++i) {
         for (qsizetype j = 0; j < (*graph)[i].size(); ++j) {
             if((*graph)[i][j] > 0) {
-                connections += "\tedge" + QString::number(i+1) + " -- node" + QString::number(j+1) + ";\n";
+                connections += "\tedge" + QString::number(i+1) + " -- node" + QString::number(j+1) + "[constraint=false];\n";
             }
         }
     }
-    return result.arg(nodes, edges, connections).toUtf8();
+    return result.arg(snodes, sedges, connections).toUtf8();
 }
 
 void GraphView::updateCache() {
