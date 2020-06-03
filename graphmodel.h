@@ -28,6 +28,7 @@ public:
     [[nodiscard]] Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    Graph* graph;
 
 protected:
     bool removeRows(int row, int count, const QModelIndex& parent) override;
@@ -35,8 +36,6 @@ protected:
     bool removeColumns(int column, int count, const QModelIndex& parent) override;
     bool insertColumns(int column, int count, const QModelIndex& parent) override;
 
-private:
-    Graph* graph;
 public slots:
     void rebuildModel(int rows=-1, int columns=-1);
 };

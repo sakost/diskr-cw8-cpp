@@ -1,6 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QShortcut>
+
+#include "Algorithms.h"
+
+#include <vector>
+
 
 MainWindow::MainWindow(GraphView *pView, GraphModel* model, QWidget *parent)
             : QMainWindow(parent),
@@ -28,11 +34,21 @@ MainWindow::MainWindow(GraphView *pView, GraphModel* model, QWidget *parent)
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startAlgorithm()));
 
+    auto s1 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this);
+    s1->setEnabled(true);
+    connect(s1, &QShortcut::activated, this, &MainWindow::startAlgorithm);
+
     emit graphView->updateImage();
 }
-
 void MainWindow::startAlgorithm() {
-    ui->outputTextBrowser->append("stub...");
+    ui->outputTextBrowser->clear();
+    ui->outputTextBrowser->append("Starting algorithm of Mogoo");
+    Graph *graph = Algorithms::hypergraph_to_usual(graphModel->graph);
+    auto colors = Algorithms::Magoo(graph, ui->outputTextBrowser);
+    for(auto &el: colors){
+        qDebug() << el << "\n";
+    }
+    delete graph;
 }
 
 void MainWindow::changedEdges(int count) {

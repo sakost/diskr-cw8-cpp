@@ -4,7 +4,7 @@
 
 #include "Graph.h"
 
-QVector<QVector<int>> Graph::get_adjacency_matrix() {
+QVector<QVector<int>> Graph::get_adjacency_matrix() const {
     QVector<QVector<int>> result;
     if (this->empty()){
         return result;
@@ -31,5 +31,44 @@ QVector<QVector<int>> Graph::get_adjacency_matrix() {
         }
     }
     return result;
+}
+
+QVector<QVector<int>> Graph::get_incident_matrix() const{
+    return QVector< QVector < int > > (*this);
+}
+
+Graph *Graph::from_incident_matrix(const QVector<QVector<int>> &incident_matrix) {
+    auto graph = new Graph;
+    (*graph) = incident_matrix;
+    return graph;
+}
+
+Graph *Graph::from_adjacency_matrix(const QVector<QVector<int>> &adjacency_matrix) {
+    using std::begin;
+    using std::end;
+
+    if(adjacency_matrix.empty()){
+        return nullptr;
+    }
+    if(adjacency_matrix.size() != adjacency_matrix[0].size()){
+        return nullptr;
+    }
+    auto graph = new Graph;
+    for (int i = 0; i < adjacency_matrix.size(); ++i) {
+        for (int j = i+1; j < adjacency_matrix[i].size(); ++j) {
+            if(adjacency_matrix[i][j] != 0) {
+                QVector<int> edge(adjacency_matrix.size());
+//                std::iota(begin(edge), end(edge), 0);
+                edge[i] = 1;
+                edge[j] = 1;
+                graph->push_back(edge);
+            }
+        }
+    }
+    if(graph->empty()){
+        graph->push_back(QVector<int> (adjacency_matrix.size()));
+    }
+
+    return graph;
 }
 

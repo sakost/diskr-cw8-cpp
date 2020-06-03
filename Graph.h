@@ -11,7 +11,14 @@
 class Graph: public QVector<QVector<int> >{
 //    Q_OBJECT
 public:
-    [[maybe_unused]] QVector<QVector<int>> get_adjacency_matrix();
+    [[maybe_unused]] [[nodiscard]] QVector<QVector<int>> get_adjacency_matrix() const;
+    [[maybe_unused]] [[nodiscard]] QVector<QVector<int>> get_incident_matrix() const;
+    void operator=(const QVector<QVector<int>>& incident_matrix) {
+        QVector::operator=(incident_matrix);
+    }
+
+    static Graph* from_incident_matrix(const QVector<QVector<int>>& incident_matrix);
+    static Graph* from_adjacency_matrix(const QVector<QVector<int>>& adjacency_matrix);
 };
 
 
