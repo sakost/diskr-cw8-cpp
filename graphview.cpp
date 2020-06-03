@@ -65,14 +65,14 @@ QByteArray GraphView::toGraphviz() {
 
     if(!graph->empty()){
         for (int i = 0; i < (*graph)[0].size(); ++i) {
-            nodes += "node" + QString::number(i+1);
+            nodes += "node" + QString::number(i);
         }
     }
 
     QString snodes = QString("\t\t%1%2;\n").arg(nodes.join(" -- "), !graph->empty() && (*graph)[0].size() > 1 ? "[style=invis]" : "");//"\t\t" + nodes.join(" -- ") + ";\n";
 
     for (int i = 0; i < graph->size(); ++i) {
-        edges += "edge" + QString::number(i+1);
+        edges += "edge" + QString::number(i);
     }
 
     QString sedges = QString("\t\t%1%2;\n").arg(edges.join(" -- "), graph->size() > 1 ? "[style=invis]" : "");
@@ -81,7 +81,7 @@ QByteArray GraphView::toGraphviz() {
     for (qsizetype i = 0; i < graph->size(); ++i) {
         for (qsizetype j = 0; j < (*graph)[i].size(); ++j) {
             if((*graph)[i][j] > 0) {
-                connections += "\tedge" + QString::number(i+1) + " -- node" + QString::number(j+1) + "[constraint=false];\n";
+                connections += "\tedge" + QString::number(i) + " -- node" + QString::number(j) + "[constraint=false];\n";
             }
         }
     }
