@@ -30,14 +30,9 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Graph* graph;
 
-protected:
-    bool removeRows(int row, int count, const QModelIndex& parent) override;
-    bool insertRows(int row, int count, const QModelIndex& parent) override;
-    bool removeColumns(int column, int count, const QModelIndex& parent) override;
-    bool insertColumns(int column, int count, const QModelIndex& parent) override;
-
 public slots:
-    void rebuildModel(int rows=-1, int columns=-1);
+    void addNode();
+    void deleteNode();
 };
 
 #endif //DISKR_CW8_CPP_GRAPHMODEL_H

@@ -9,7 +9,6 @@
 #include <QString>
 
 #define DEFAULT_NODES 5
-#define DEFAULT_EDGES 3
 
 GraphModel::GraphModel(): GraphModel(new Graph){}
 
@@ -18,11 +17,10 @@ GraphModel::GraphModel(Graph* newGraph): QAbstractTableModel()
 {
     graph = newGraph;
 
-    for (int i = 0; i < DEFAULT_EDGES; ++i) {
+    for (int i = 0; i < DEFAULT_NODES; ++i) {
         (*graph).push_back(QVector<int>(DEFAULT_NODES));
     }
 }
-
 
 
 int GraphModel::rowCount(const QModelIndex &parent) const {
@@ -30,8 +28,7 @@ int GraphModel::rowCount(const QModelIndex &parent) const {
 }
 
 int GraphModel::columnCount(const QModelIndex &parent) const {
-    if(graph->empty()) return 0;
-    return (*graph)[0].size();
+    return graph->size();
 }
 
 QVariant GraphModel::data(const QModelIndex &index, int role) const {
@@ -39,9 +36,6 @@ QVariant GraphModel::data(const QModelIndex &index, int role) const {
         if (!checkIndex(index))return QVariant();
         if(index.row() >= graph->size())return QVariant();
         if(graph->empty()) return QVariant();
-        if(index.column() >= (*graph)[0].size()) {
-            return QVariant();
-        }
         return (*graph)[index.row()][index.column()];
     }
     return QVariant();
@@ -67,9 +61,12 @@ bool GraphModel::setData(const QModelIndex &index, const QVariant &value, int ro
         if(val < 0){
             return false;
         }
-        (*graph)[i][j] = val > 0;
-        emit dataChanged(this->createIndex(i, j, (*graph)[i][j]),
-                this->createIndex(i, j, (*graph)[i][j]), {role});
+        if(i == j){
+            return false;
+        }
+        (*graph)[i][j] = (*graph)[j][i] = val > 0;
+        int u = std::min(i, j), v = std::max(i, j);
+        emit dataChanged(this->createIndex(u, u),this->createIndex(v, v), {role});
         return true;
     }
     return false;
@@ -79,101 +76,27 @@ QModelIndex GraphModel::parent(const QModelIndex &child) const {
     return QModelIndex();
 }
 
-
-bool GraphModel::removeColumns(int column, int count, const QModelIndex &parent) {
-    if(column < 0 || graph->empty() || column + count != (*graph)[0].size()){
-        return false;
+void GraphModel::addNode() {
+    beginResetModel();
+    for(auto &node: *graph){
+        node.push_back(0);
     }
-    beginRemoveColumns(parent, column, column + count-1);
-    for (int i = 0; i < count; ++i) {
-        for (auto &edge: *graph){
-            edge.pop_back();
-        }
-    }
-    endRemoveColumns();
-    emit dataChanged(this->createIndex(0, column), this->createIndex(graph->size()-1, column+count-1));
-    return true;
+    graph->push_back(QVector<int>(graph->size() + 1));
+    endResetModel();
+    emit dataChanged(createIndex(0, 0), createIndex(graph->size()-1, graph->size()-1));
 }
 
-bool GraphModel::removeRows(int row, int count, const QModelIndex &parent) {
-    if(row < 0 || row + count != graph->size()){
-        return false;
-    }
-    int col_removed;
-    beginRemoveRows(parent, row, row+count-1);
-    col_removed = graph->back().size() - 1;
-    for (int i = 0; i < count; ++i) {
-        graph->pop_back();
-    }
-    endRemoveRows();
-    emit dataChanged(this->createIndex(row, 0), this->createIndex(row, col_removed));
-    return true;
-}
-
-
-bool GraphModel::insertRows(int row, int count, const QModelIndex& parent) {
-    if(row != graph->size() || count < 1){ // just append items
-        return false;
-    }
-    if(row == graph->size()){ // append
-        beginInsertRows(parent, row, row);
-        int columns_count = DEFAULT_NODES;
-        if (!graph->empty()) {
-            columns_count = (*graph)[0].size();
-        }
-        for (int i = 0; i < count; ++i) {
-            graph->push_back(QVector<int>(columns_count, 0));
-        }
-        endInsertRows();
-        emit dataChanged(this->createIndex(row, 0), this->createIndex(row+count-1, (*graph)[0].size() - 1));
-        return true;
-    }
-    return false; // can't be reached
-}
-
-
-bool GraphModel::insertColumns(int column, int count, const QModelIndex& parent) {
-    if(!graph->empty() && column != (*graph)[0].size() || column < 1){ // just append items
-        return false;
-    }
+void GraphModel::deleteNode() {
+    beginResetModel();
     if(graph->empty()){
-        if(!insertRow(graph->size())){ // append row
-            return false;
-        }
-    }
-    if(column == (*graph)[0].size()){ // append
-        beginInsertColumns(parent, column, column);
-        for (int i = 0; i < count; ++i) {
-            for (auto &edge: *graph) {
-                edge.push_back(0);
-            }
-        }
-        endInsertColumns();
-        emit dataChanged(this->createIndex(0, column), this->createIndex(graph->size()-1, column+count-1));
-        return true;
-    }
-    return false; // can't be reached
-}
-
-
-void GraphModel::rebuildModel(int rows, int columns) {
-    if(rows == -1){
-        rows = graph->size();
-    }
-    if(columns == -1){
-        columns = graph->empty() ? DEFAULT_NODES : (*graph)[0].size();
-    }
-    if(rows > graph->size()){
-        insertRows(graph->size(), rows - graph->size(), QModelIndex());
-    } else if(rows < graph->size()){
-        removeRows(rows, graph->size() - rows, QModelIndex());
-    }
-    if(rows == 0){
         return;
     }
-    if((*graph)[0].size() < columns){
-        insertColumns((*graph)[0].size(), columns - (*graph)[0].size(), QModelIndex());
-    } else if((*graph)[0].size() > columns){
-        removeColumns(columns, (*graph)[0].size() - columns, QModelIndex());
+    graph->pop_back();
+
+    for(auto &node: *graph){
+        node.pop_back();
     }
+    endResetModel();
+    emit dataChanged(createIndex(0, 0), createIndex(graph->size()-1, graph->size()-1));
 }
+

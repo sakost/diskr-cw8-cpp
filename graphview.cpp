@@ -42,50 +42,27 @@ void GraphView::paintEvent(QPaintEvent *event) {
 
 QByteArray GraphView::toGraphviz() {
     QString connections, result = "graph G {\n"
-//                        "\trank=same;\n"
-//                        "\trankdir=LR;\n"
-                        "\toverlap=false; splines=false;\n"
-                        "\tsubgraph cluster_0 {\n"
-                        "\t\tstyle=filled;\n"
-                        "\t\tcolor=lightgrey;\n"
-                        "\t\tnode [style=filled,color=white];\n"
-                        "%1"
-                        "\t\tlabel = \"nodes\";\n"
-                        "\t}\n"
-                        "\n"
-                        "\tsubgraph cluster_1 {\n"
-                        "\t\tnode [style=filled];\n"
-                        "%2"
-                        "\t\tlabel = \"edges\";\n"
-                        "\t\tcolor=blue\n"
-                        "\t}\n"
-                        "%3"
-                        "}";
-    QStringList nodes, edges;
-
-    if(!graph->empty()){
-        for (int i = 0; i < (*graph)[0].size(); ++i) {
-            nodes += "node" + QString::number(i);
-        }
-    }
-
-    QString snodes = QString("\t\t%1%2;\n").arg(nodes.join(" -- "), !graph->empty() && (*graph)[0].size() > 1 ? "[style=invis]" : "");//"\t\t" + nodes.join(" -- ") + ";\n";
+                                  "\tnode [shape=circle];\n"
+                                  "%1"
+                                  "%2"
+                                  "}";
+    QStringList nodes;
 
     for (int i = 0; i < graph->size(); ++i) {
-        edges += "edge" + QString::number(i);
+        nodes += QString::number(i+1);
     }
 
-    QString sedges = QString("\t\t%1%2;\n").arg(edges.join(" -- "), graph->size() > 1 ? "[style=invis]" : "");
+    QString snodes = nodes.join(";\n") + "\n;";
 
 
     for (qsizetype i = 0; i < graph->size(); ++i) {
         for (qsizetype j = 0; j < (*graph)[i].size(); ++j) {
             if((*graph)[i][j] > 0) {
-                connections += "\tedge" + QString::number(i) + " -- node" + QString::number(j) + "[constraint=false];\n";
+                connections += "\t" + QString::number(i+1) + " -- " + QString::number(j+1) + ";\n";
             }
         }
     }
-    return result.arg(snodes, sedges, connections).toUtf8();
+    return result.arg(snodes, connections).toUtf8();
 }
 
 void GraphView::updateCache() {
@@ -93,7 +70,7 @@ void GraphView::updateCache() {
     dotFile->write(toGraphviz());
     dotFile->flush();
     QProcess process;
-    process.start("dot", {"-Tpng", dotFile->fileName()});
+    process.start("circo", {"-Tpng", dotFile->fileName()});
     process.waitForFinished();
     auto outBytes = process.readAllStandardOutput();
     auto image = QImage::fromData(outBytes, "png");
@@ -122,5 +99,4 @@ void GraphView::updateImage() {
 
 GraphView::~GraphView(){
     delete dotFile;
-
 }

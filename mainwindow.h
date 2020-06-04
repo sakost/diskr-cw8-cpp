@@ -25,14 +25,10 @@ class MainWindow: public QMainWindow{
 public:
     MainWindow(GraphView *pView, GraphModel* model, QWidget *parent= nullptr);
 
-public slots:
-
 private:
     Ui::MainWindow *ui;
     GraphView *graphView;
     GraphModel *graphModel;
 public slots:
     void startAlgorithm();
-    void changedEdges(int count);
-    void changedNodes(int count);
 };
