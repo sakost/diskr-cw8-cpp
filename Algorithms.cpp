@@ -72,17 +72,15 @@ QVector<QSet<uint_fast64_t> > Algorithms::Magoo(const Graph *graph, QTextBrowser
     });
 
     output->append("filtering...");
-    size_t i = 0;
-    while(i < result.size()){
+    for(size_t i = 1;  i < result.size(); i++){
         QVector< QSet< uint_fast64_t > > sset(begin(result), begin(result)+i);
-        for (size_t j = i+1; j < result.size(); ++j) {
+        for (size_t j = i; j < result.size(); ++j) {
             if(!std::includes(begin(result[j]), end(result[j]),
                     begin(result[i]), end(result[i]))){
                 sset.push_back(result[j]);
             }
         }
         result = sset;
-        i++;
     }
 
     output->append("reversing sets...");
@@ -110,4 +108,10 @@ QVector<QSet<uint_fast64_t> > Algorithms::Magoo(const Graph *graph, QTextBrowser
 Graph *Algorithms::hypergraph_to_usual(const Graph *graph) {
     return Graph::from_adjacency_matrix(graph->get_adjacency_matrix());
 }
+
+QVector<QSet<uint_fast64_t> > Algorithms::get_colors(const Graph *graph, Algorithms::Algorithm method) {
+    return QVector<QSet<uint_fast64_t>>();
+}
+
+
 
