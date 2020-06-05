@@ -20,6 +20,8 @@ public:
     explicit GraphView(Graph* newGraph, QWidget* parent = nullptr);
     ~GraphView() override;
     [[nodiscard]] QByteArray toGraphviz();
+    QVector<QColor> *colors = nullptr;
+    bool started = true;
 
 protected:
     void paintEvent(QPaintEvent *event) override ;

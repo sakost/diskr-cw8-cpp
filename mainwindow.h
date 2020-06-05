@@ -31,8 +31,16 @@ private:
     Ui::MainWindow *ui;
     GraphView *graphView;
     GraphModel *graphModel;
+    QMap<int_fast64_t, QVector<int_fast64_t>> color2nodes;
+    QMap<int_fast64_t, QColor> colors;
+    size_t color_index = 0;
+
+    void checkColors(const QVector<int_fast64_t>& icolors);
 public slots:
     void startAlgorithm();
     void changedEdges(int count);
     void changedNodes(int count);
+    void changedColors(int value);
+    void changeColor();
+    void syncColors();
 };

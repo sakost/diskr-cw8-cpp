@@ -5,6 +5,9 @@
 #ifndef DISKR_CW8_CPP_GRAPHMODEL_H
 #define DISKR_CW8_CPP_GRAPHMODEL_H
 
+#define DEFAULT_NODES 5
+#define DEFAULT_EDGES 3
+
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QPair>

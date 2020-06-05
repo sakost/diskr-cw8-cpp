@@ -6,6 +6,7 @@
 #include <cmath>
 
 QVector<QSet<uint_fast64_t> > Algorithms::Magoo(const Graph *graph, QTextBrowser *output) {
+    // does not work todo fix
     if(graph->empty()){
         output->append("Graph is empty. Exiting...");
         return QVector< QSet< uint_fast64_t > >();
@@ -109,8 +110,58 @@ Graph *Algorithms::hypergraph_to_usual(const Graph *graph) {
     return Graph::from_adjacency_matrix(graph->get_adjacency_matrix());
 }
 
-QVector<QSet<uint_fast64_t> > Algorithms::get_colors(const Graph *graph, Algorithms::Algorithm method) {
-    return QVector<QSet<uint_fast64_t>>();
+QVector<int_fast64_t> Algorithms::get_colors(const Graph *graph, Algorithms::Algorithm method) {
+    int nodes_count = (*graph)[0].size();
+    QVector<int_fast64_t> result(nodes_count, -1);
+    switch (method) {
+        case AlgoMagoo:
+            return result;
+        case AlgoDefault:
+            QVector<int_fast64_t> colors(nodes_count);
+            std::iota(colors.begin(), colors.end(), 0);
+
+            auto adj_matrix = graph->get_adjacency_matrix();
+            // building adjacency lists
+            QVector<QVector<int_fast64_t>> adj_lists(adj_matrix.size());
+            for (int i = 0; i < adj_matrix.size(); ++i) {
+                for (int j = 0; j < adj_matrix[i].size(); ++j) {
+                    if(adj_matrix[i][j])
+                        adj_lists[i].push_back(j);
+                }
+            }
+
+            for (const auto & color : colors) {
+                bool found = false;
+                size_t cur;
+                for (int i = 0; i < adj_lists.size(); ++i) { // iterate over all nodes
+                    if(result[i] == -1){ // node was not colored
+                        cur = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found){ // all nodes are colored
+                    break;
+                }
+                result[cur] = color;
+                for (int i = 0; i < adj_lists.size(); ++i) {
+                    if(i == cur || result[i] != -1){
+                        continue;
+                    }
+                    bool have_same = false;
+                    for (int j = 0; j < adj_lists[i].size(); ++j) {
+                        if(result[j] == color){
+                            have_same = true;
+                            break;
+                        }
+                    }
+                    if(!have_same && result[i] == -1){
+                        result[i] = color;
+                    }
+                }
+            }
+    }
+    return result;
 }
 
 

@@ -8,8 +8,6 @@
 #include <QDebug>
 #include <QString>
 
-#define DEFAULT_NODES 5
-#define DEFAULT_EDGES 3
 
 GraphModel::GraphModel(): GraphModel(new Graph){}
 
@@ -116,7 +114,7 @@ bool GraphModel::insertRows(int row, int count, const QModelIndex& parent) {
         return false;
     }
     if(row == graph->size()){ // append
-        beginInsertRows(parent, row, row);
+        beginInsertRows(parent, row, row+count-1);
         int columns_count = DEFAULT_NODES;
         if (!graph->empty()) {
             columns_count = (*graph)[0].size();
@@ -142,7 +140,7 @@ bool GraphModel::insertColumns(int column, int count, const QModelIndex& parent)
         }
     }
     if(column == (*graph)[0].size()){ // append
-        beginInsertColumns(parent, column, column);
+        beginInsertColumns(parent, column, column+count-1);
         for (int i = 0; i < count; ++i) {
             for (auto &edge: *graph) {
                 edge.push_back(0);
@@ -164,16 +162,16 @@ void GraphModel::rebuildModel(int rows, int columns) {
         columns = graph->empty() ? DEFAULT_NODES : (*graph)[0].size();
     }
     if(rows > graph->size()){
-        insertRows(graph->size(), rows - graph->size(), QModelIndex());
+        insertRows(rowCount(QModelIndex()), rows - rowCount(QModelIndex()), QModelIndex());
     } else if(rows < graph->size()){
-        removeRows(rows, graph->size() - rows, QModelIndex());
+        removeRows(rows, rowCount(QModelIndex()) - rows, QModelIndex());
     }
-    if(rows == 0){
+    if(rowCount(QModelIndex()) == 0){
         return;
     }
-    if((*graph)[0].size() < columns){
-        insertColumns((*graph)[0].size(), columns - (*graph)[0].size(), QModelIndex());
+    if(columnCount(QModelIndex()) < columns){
+        insertColumns(columnCount(QModelIndex()), columns - columnCount(QModelIndex()), QModelIndex());
     } else if((*graph)[0].size() > columns){
-        removeColumns(columns, (*graph)[0].size() - columns, QModelIndex());
+        removeColumns(columns, columnCount(QModelIndex()) - columns, QModelIndex());
     }
 }

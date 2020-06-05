@@ -18,7 +18,7 @@ public:
     };
     static QVector< QSet<uint_fast64_t> > Magoo(const Graph *graph, QTextBrowser* output);
     static Graph* hypergraph_to_usual(const Graph *graph);
-    static QVector< QSet<uint_fast64_t> > get_colors(const Graph* graph, Algorithm method=AlgoDefault);
+    static QVector<int_fast64_t> get_colors(const Graph* graph, Algorithm method=AlgoDefault);
 };
 
 
