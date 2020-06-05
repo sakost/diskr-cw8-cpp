@@ -150,7 +150,7 @@ QVector<int_fast64_t> Algorithms::get_colors(const Graph *graph, Algorithms::Alg
                     }
                     bool have_same = false;
                     for (int j = 0; j < adj_lists[i].size(); ++j) {
-                        if(result[j] == color){
+                        if(result[adj_lists[i][j]] == color){
                             have_same = true;
                             break;
                         }
